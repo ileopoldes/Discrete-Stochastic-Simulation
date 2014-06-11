@@ -6,19 +6,9 @@ import java.util.concurrent.locks.Lock;
 
 import core.util.StatisticsCollector;
 
-/**
- * T1 - T�cnicas de Programa��o
- * 
- * @author Andrei 
- * @author Rodrigo Scorsatto
- * @author Alexandre Baptista
- * @version 25/09/09
- */
 
-public class Caixa implements Runnable {
-	/**
-	 * Tipo do caixa, pode ser normal ou prefer�ncial
-	 */
+public class Atendente implements Runnable {
+	
 	private Tipo tipo;
 	private ArrayBlockingQueue<Cliente> filaPrincipal=null;
 	private ArrayBlockingQueue<Cliente> filaPreferencial=null;
@@ -29,7 +19,7 @@ public class Caixa implements Runnable {
 	private Random random;
 	private StatisticsCollector collector;
 	
-	public Caixa(Tipo tipo, int tRmin, int tRmax, StatisticsCollector collector) {
+	public Atendente(Tipo tipo, int tRmin, int tRmax, StatisticsCollector collector) {
 		this.tRmin = tRmin;
 		this.tRmax = tRmax;
 		this.tipo = tipo;
@@ -37,20 +27,12 @@ public class Caixa implements Runnable {
 		this.collector = collector;
 	}
 
-	public Tipo getTipo(){
-		return tipo;
-	}
-	
-	public void setTipo(Tipo tipo){
-		this.tipo = tipo;
-	}
-
 	@Override
 	public void run() {
 		boolean continua = true;
 		while(continua) {
 			int sleepTime = 0;
-			// Se for caixa normal, n�o atende cliente preferencial...
+			// Se for atendente normal, não atende cliente preferencial...
 			// Logo, tranca se a fila estiver vazia e fica esperando!
 			if (this.tipo == Tipo.Normal) {
 				try {
@@ -58,7 +40,7 @@ public class Caixa implements Runnable {
 					temp.leaveQueue();
 					while (!temp.getRequisicoes().isEmpty()) {
 						Requisicao req = temp.getRequisicoes().iterator().next();
-						if (req.isCheque()) {
+						if (req.isCartao()) {
 							lockCheques.lock();
 							sleepTime = random.nextInt(tRmax-tRmin)+tRmin; 
 							Thread.sleep(sleepTime);
@@ -76,19 +58,22 @@ public class Caixa implements Runnable {
 				}
 			}
 			else {
-				// P�ra todo mundo, a fim de garantir que n�o aconte�a
-				// De uma thread entrar no if de uma fila n�o vazia
+				
+				// Para todo mundo, a fim de garantir que nao aconteca
+				// De uma thread entrar no if de uma fila nao vazia
 				// E a outra thread consumir antes e deixar essa trancada.
 				lock.lock();
-				// Se for caixa preferencial, fica testando as duas filas.
+				
+				// Se for atendente preferencial, fica testando as duas filas.
 				// Atende primeiro a preferencial, se tiver cliente.
+				
 				if (!filaPreferencial.isEmpty()) {
 					try {
 						Cliente temp = filaPreferencial.take();
 						temp.leaveQueue();
 						while (!temp.getRequisicoes().isEmpty()) {
 							Requisicao req = temp.getRequisicoes().iterator().next();
-							if (req.isCheque()) {
+							if (req.isCartao()) {
 								lockCheques.lock();
 								sleepTime = random.nextInt(tRmax-tRmin)+tRmin; 
 								Thread.sleep(sleepTime);
@@ -110,7 +95,7 @@ public class Caixa implements Runnable {
 						temp.leaveQueue();
 						while (!temp.getRequisicoes().isEmpty()) {
 							Requisicao req = temp.getRequisicoes().iterator().next();
-							if (req.isCheque()) {
+							if (req.isCartao()) {
 								lockCheques.lock();
 								sleepTime = random.nextInt(tRmax-tRmin)+tRmin; 
 								Thread.sleep(sleepTime);
@@ -127,7 +112,7 @@ public class Caixa implements Runnable {
 						continua = false;
 					}
 				}
-				// D� um tempo pro processador.
+				// um tempo pro processador.
 				try {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {
@@ -139,6 +124,19 @@ public class Caixa implements Runnable {
 		}
 	}
 
+	
+	
+	
+	
+	
+	public Tipo getTipo(){
+		return tipo;
+	}
+	
+	public void setTipo(Tipo tipo){
+		this.tipo = tipo;
+	}
+	
 	public void setFilaPrincipal(ArrayBlockingQueue<Cliente> filaPrincipal) {
 		this.filaPrincipal = filaPrincipal;
 	}

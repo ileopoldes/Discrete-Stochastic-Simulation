@@ -1,12 +1,4 @@
 package core.util;
-/**
- * T1 - T�cnicas de Programa��o
- * 
- * @author Andrei
- * @author Rodrigo Scorsatto
- * @author Alexandre Baptista
- * @version 25/09/09
- */
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,16 +11,10 @@ public class LoaderPropriedades {
 	private FileInputStream inputStream;
 	private int tSim, tCMin, tCmax, qRMin, qRMax, tRMin, tRMax, nC, nP;
 
-	/**
-	 * 
-	 * Classe repons�vel por carregar as configura��es do arquivo
-	 * simulador.config
-	 * 
-	 */
 	public LoaderPropriedades() {
 		properties = new Properties();
 		try {
-			inputStream = new FileInputStream("simulador.config");
+			inputStream = new FileInputStream("resources/simulador.config");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -41,11 +27,7 @@ public class LoaderPropriedades {
 			e.printStackTrace();
 		}
 	}
-	/**
-	 * 
-	 * Classe repons�vel por carregar as configura��es do simulador
-	 * 
-	 */
+	
 	public void Load() {
 		try {
 			properties.load(inputStream);

@@ -5,24 +5,12 @@ import java.util.Random;
 
 import core.util.StatisticsCollector;
 
-/**
- * T1 - T�cnicas de Programa��o
- * 
- * @author Andrei
- * @author Rodrigo Scorsatto
- * @author Alexandre Baptista
- * @version 25/09/09
- */
 public class Cliente {
 	private ArrayList<Requisicao> requisicoes=null;
 	private Tipo tipo=null;
 	private StatisticsCollector collector;
 	long time;
 	
-	/**
-	 * @param tipo
-	 * @precondition tipo !=null
-	 */
 	public Cliente(Tipo tipo, int qRMin, int qRMax, StatisticsCollector collector){
 		assert tipo!=null;
 		
