@@ -1,4 +1,4 @@
-package core.tools;
+package core.util;
 import java.util.*;
 
 /**
